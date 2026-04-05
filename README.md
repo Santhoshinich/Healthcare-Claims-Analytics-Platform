@@ -101,6 +101,8 @@ http://localhost:8081
   * `dbt build`
 * Validates pipeline before merge
 
+## 🚀 CI Trigger
+
 ---
 
 ## 📊 Future Improvements
