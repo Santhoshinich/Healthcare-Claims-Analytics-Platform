@@ -1,0 +1,76 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+
+  airflow-init:
+    image: airflow-dbt:latest
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY}
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING}
+      PYTHONPATH: /opt/airflow/dags
+    volumes:
+      - C:/projects/airflow-dags:/opt/airflow/dags
+      - C:/airflow-logs:/opt/airflow/logs
+      - "C:/projects/Healthcare-Claims-Analytics-Platform/dbt_project:/opt/airflow/dbt"
+    command: >
+      bash -c "
+      airflow db migrate &&
+      airflow users create --username santhoshi26 --password Asap@1235 --firstname santhoshini --lastname ch --role Admin --email santhoshinich26@gmail.com
+      "
+
+  airflow-webserver:
+    build: .
+    image: airflow-dbt:latest
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__WEBSERVER__SECRET_KEY: "darlingdilkyunthoda"
+      AIRFLOW__LOGGING__BASE_LOG_FOLDER: /opt/airflow/logs
+      PYTHONPATH: /opt/airflow/dags
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING}
+    volumes:
+      - C:/projects/airflow-dags:/opt/airflow/dags
+      - C:/airflow-logs:/opt/airflow/logs
+      - "C:/projects/Healthcare-Claims-Analytics-Platform/dbt_project:/opt/airflow/dbt"
+    ports:
+      - "8081:8080"
+    command: webserver
+
+  airflow-scheduler:
+    image: airflow-dbt:latest
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__WEBSERVER__SECRET_KEY: "darlingdilkyunthoda"
+      AIRFLOW__LOGGING__BASE_LOG_FOLDER: /opt/airflow/logs
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING}
+      PYTHONPATH: /opt/airflow/dags
+    volumes:
+      - C:/projects/airflow-dags:/opt/airflow/dags
+      - C:/airflow-logs:/opt/airflow/logs
+      - "C:/projects/Healthcare-Claims-Analytics-Platform/dbt_project:/opt/airflow/dbt"
+    command: scheduler
+
+volumes:
+  postgres-db-volume:

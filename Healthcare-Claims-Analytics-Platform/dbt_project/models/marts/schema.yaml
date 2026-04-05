@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: fact_claims
+    description: "Fact table for claims"
+
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: "claim_amount >= 0"

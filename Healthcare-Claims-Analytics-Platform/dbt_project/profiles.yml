@@ -1,0 +1,14 @@
+dbt_project:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: SZHBLZD-UE15732
+      user: SANTHOSHI
+      password: Asap@SNWflake148
+      role: ACCOUNTADMIN
+      warehouse: HEALTHCARE_WH
+      database: HEALTHCARE_DB
+      schema: "DBT"
+      threads: 4
+      client_session_keep_alive: false

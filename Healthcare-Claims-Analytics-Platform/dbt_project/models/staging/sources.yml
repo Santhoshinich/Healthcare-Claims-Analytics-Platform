@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw
+    database: HEALTHCARE_DB   # your Snowflake DB
+    schema: RAW              # your RAW schema
+
+    tables:
+      - name: claims
+      - name: patients
+      - name: providers

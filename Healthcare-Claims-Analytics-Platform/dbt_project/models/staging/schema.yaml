@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: stg_claims
+    description: "Staging table for claims data"
+
+    columns:
+      - name: claim_id
+        description: "Primary key"
+        tests:
+          - not_null
+          - unique
+
+      - name: patient_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_patients')
+              field: patient_id
+
+      - name: provider_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_providers')
+              field: provider_id
+
+  - name: stg_patients
+    columns:
+      - name: patient_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_providers
+    columns:
+      - name: provider_id
+        tests:
+          - not_null
+          - unique
