@@ -33,10 +33,10 @@ models:
   dbt_project:
 
     staging:
-      +schema: STAGING
+      +schema: DBT_STAGING
 
     marts:
-      +schema: ANALYTICS
+      +schema: DBT_ANALYTICS
     # Config indicated by + and applies to all files under models/example/
     example:
       +materialized: view
